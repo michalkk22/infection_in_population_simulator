@@ -11,10 +11,18 @@ class SimulationView extends StatefulWidget {
 class _SimulationViewState extends State<SimulationView> {
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return Container(
       height: SimulationArea.height,
       width: SimulationArea.width,
-      child: Text('dupa'),
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: Colors.black,
+          width: 2,
+        ),
+      ),
+      child: Center(
+        child: Text('dupa'),
+      ),
     );
   }
 }
