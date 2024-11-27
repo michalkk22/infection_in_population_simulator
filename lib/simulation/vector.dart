@@ -12,11 +12,33 @@ class Vector {
   });
 
   factory Vector.random() {
-    Random random = SingleRandom().random();
+    Random random = SingleRandom().random;
     return Vector(
       x: random.nextDouble() * 2 - 1,
       y: random.nextDouble() * 2 - 1,
     );
+  }
+
+  factory Vector.randomNorm({double to = 1}) {
+    Vector vector = Vector.random();
+    vector.norm(to: to);
+    return vector;
+  }
+
+  factory Vector.randomConstrained({
+    double top = 1,
+    double bottom = 1,
+    double left = 1,
+    double right = 1,
+    double length = 1,
+  }) {
+    Random random = SingleRandom().random;
+    Vector vector = Vector(
+      x: random.nextDouble() * (right + left) - left,
+      y: random.nextDouble() * (bottom + top) - top,
+    );
+    vector.norm(to: length);
+    return vector;
   }
 
   void norm({double to = 1}) {
@@ -25,10 +47,11 @@ class Vector {
     y = y / length * to;
   }
 
-  void next() {
-    Random random = SingleRandom().random();
+  void next({double length = 1}) {
+    Random random = SingleRandom().random;
     x += random.nextDouble() * 0.2 - 0.1;
     y += random.nextDouble() * 0.2 - 0.1;
+    norm(to: length);
   }
 
   double abs() {

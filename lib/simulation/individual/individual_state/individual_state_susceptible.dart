@@ -1,11 +1,6 @@
-import 'package:infection_in_population_simulator/simulation/individual/individual_state/individual_state.dart';
+import 'package:infection_in_population_simulator/simulation/individual/individual_state/individual_state_healthy.dart';
 
-class IndividualStateSusceptible implements IndividualState {
+class IndividualStateSusceptible extends IndividualStateHealthy {
   @override
   handle() {}
-
-  @override
-  bool operator ==(Object other) {
-    return (other is IndividualStateSusceptible);
-  }
 }

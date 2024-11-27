@@ -1,6 +1,6 @@
-import 'package:infection_in_population_simulator/simulation/individual/individual_state/individual_state_susceptible.dart';
+import 'package:infection_in_population_simulator/simulation/individual/individual_state/individual_state.dart';
 
-class IndividualStateHealthy extends IndividualStateSusceptible {
+abstract class IndividualStateHealthy extends IndividualState {
   @override
   handle() {}
 }

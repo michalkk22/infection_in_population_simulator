@@ -6,5 +6,5 @@ class SingleRandom {
   factory SingleRandom() => _instance;
 
   final Random _random = Random();
-  Random random() => _random;
+  Random get random => _random;
 }
