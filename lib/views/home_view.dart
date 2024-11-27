@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:infection_in_population_simulator/constants/simulation_config.dart';
+import 'package:infection_in_population_simulator/simulation/individual/individual_state.dart';
 import 'package:infection_in_population_simulator/simulation/simulation.dart'
     as my;
 import 'package:infection_in_population_simulator/simulation/individual/individual.dart';
@@ -21,7 +23,12 @@ class _HomeViewState extends State<HomeView> {
   void initState() {
     super.initState();
     final population = Population(IndividualList(
-        collection: List.generate(50, (_) => Individual.random())));
+        collection: List.generate(SimulationConfig.populationSize, (int i) {
+      if (i < SimulationConfig.infected) {
+        return Individual.random(state: IndividualStateInfected());
+      }
+      return Individual.random();
+    })));
 
     _simulation = my.Simulation(population: population);
   }

@@ -1,10 +1,15 @@
 import 'dart:math';
 
+import 'package:infection_in_population_simulator/constants/simulation_config.dart';
 import 'package:infection_in_population_simulator/utils/single_random.dart';
 
 class Vector {
   double x;
   double y;
+  final double defaultMaxSpeed = SimulationConfig.oneMeter *
+      2.5 /
+      100 /
+      SimulationConfig.tickDuration.inMilliseconds;
 
   Vector({
     required this.x,
@@ -19,9 +24,11 @@ class Vector {
     );
   }
 
-  factory Vector.randomNorm({double to = 1}) {
+  factory Vector.randomNorm({double? length}) {
     Vector vector = Vector.random();
-    vector.norm(to: to);
+    length ??= SingleRandom().random.nextDouble() * vector.defaultMaxSpeed;
+    vector.norm(to: length);
+    // print("Vector.randomNorm: (${vector.x},${vector.y}) at $length");
     return vector;
   }
 
@@ -30,7 +37,7 @@ class Vector {
     double bottom = 1,
     double left = 1,
     double right = 1,
-    double length = 1,
+    double? length,
   }) {
     Random random = SingleRandom().random;
     Vector vector = Vector(
@@ -41,17 +48,20 @@ class Vector {
     return vector;
   }
 
-  void norm({double to = 1}) {
+  void norm({double? to}) {
     double length = abs();
+    to ??= defaultMaxSpeed;
     x = x / length * to;
     y = y / length * to;
   }
 
-  void next({double length = 1}) {
+  void next() {
     Random random = SingleRandom().random;
-    x += random.nextDouble() * 0.2 - 0.1;
-    y += random.nextDouble() * 0.2 - 0.1;
-    norm(to: length);
+    double d = SimulationConfig.nextVectorDeviation;
+    x += random.nextDouble() * 2 * d - d;
+    y += random.nextDouble() * 2 * d - d;
+    double length = abs() + (random.nextDouble() * 2 * d - d);
+    norm(to: length.clamp(0, defaultMaxSpeed));
   }
 
   double abs() {

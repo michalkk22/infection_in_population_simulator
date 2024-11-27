@@ -1,7 +1,6 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'package:infection_in_population_simulator/constants/simulation_area.dart';
+import 'package:infection_in_population_simulator/constants/simulation_config.dart';
+import 'package:infection_in_population_simulator/simulation/individual/individual.dart';
 import 'package:infection_in_population_simulator/simulation/simulation.dart'
     as my;
 
@@ -31,39 +30,39 @@ class _SimulationViewState extends State<SimulationView> {
 
   @override
   Widget build(BuildContext context) {
-    double borderPadding = 4 * SimulationArea.individualDotSize;
+    double borderPadding = 4 * SimulationConfig.individualDotSize;
 
     return Container(
-      height: SimulationArea.height + borderPadding,
-      width: SimulationArea.width + borderPadding - 1,
+      height: SimulationConfig.height + borderPadding,
+      width: SimulationConfig.width + borderPadding - 1,
       decoration: BoxDecoration(
         border: Border.all(
           color: Colors.black,
-          width: SimulationArea.borderWidth,
+          width: SimulationConfig.borderWidth,
         ),
       ),
-      padding: const EdgeInsets.all(SimulationArea.individualDotSize),
+      padding: const EdgeInsets.all(SimulationConfig.individualDotSize),
       child: CustomPaint(
-        size: const Size(SimulationArea.width, SimulationArea.height),
-        painter: _SimulationPainter(points: widget.simulation.points),
+        size: const Size(SimulationConfig.width, SimulationConfig.height),
+        painter: _SimulationPainter(individuals: widget.simulation.individuals),
       ),
     );
   }
 }
 
 class _SimulationPainter extends CustomPainter {
-  final Iterable<Point<double>> points;
+  final Iterable<Individual> _individuals;
 
-  _SimulationPainter({required this.points});
+  _SimulationPainter({required Iterable<Individual> individuals})
+      : _individuals = individuals;
 
   @override
   void paint(Canvas canvas, Size size) {
-    final Paint paint = Paint()..color = Colors.blue;
-
-    for (var point in points) {
+    for (var individual in _individuals) {
+      final Paint paint = Paint()..color = individual.state.color;
       canvas.drawCircle(
-        Offset(point.x, point.y),
-        SimulationArea.individualDotSize,
+        Offset(individual.position.x, individual.position.y),
+        SimulationConfig.individualDotSize,
         paint,
       );
     }

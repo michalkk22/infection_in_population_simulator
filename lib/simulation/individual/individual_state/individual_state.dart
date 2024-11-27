@@ -1,3 +1,0 @@
-abstract class IndividualState {
-  handle();
-}

@@ -21,16 +21,19 @@ class IndividualList implements IndividualCollection {
 
   @override
   void update() {
+    List<Individual> toRemove = List.empty(growable: true);
     for (var individual in _collection) {
       individual.move();
       if (individual.nextOrOut()) {
-        _collection.remove(individual);
-        break;
+        toRemove.add(individual);
+        continue;
       }
+    }
+    for (var individual in toRemove) {
+      _collection.remove(individual);
     }
   }
 
-  @override
   Iterable<Point<double>> get points => List.generate(
         _collection.length,
         (int i) => _collection[i].position,
@@ -41,4 +44,7 @@ class IndividualList implements IndividualCollection {
   String toString() {
     return 'IndividualList(${_collection.length} individuals)';
   }
+
+  @override
+  Iterable<Individual> get individuals => _collection;
 }

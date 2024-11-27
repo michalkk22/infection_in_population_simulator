@@ -1,10 +1,8 @@
 import 'dart:math';
 
-import 'package:infection_in_population_simulator/constants/simulation_area.dart';
+import 'package:infection_in_population_simulator/constants/simulation_config.dart';
 import 'package:infection_in_population_simulator/extensions/bounded_point.dart';
-import 'package:infection_in_population_simulator/simulation/individual/individual_state/individual_state.dart';
-import 'package:infection_in_population_simulator/simulation/individual/individual_state/individual_state_infected.dart';
-import 'package:infection_in_population_simulator/simulation/individual/individual_state/individual_state_susceptible.dart';
+import 'package:infection_in_population_simulator/simulation/individual/individual_state.dart';
 import 'package:infection_in_population_simulator/simulation/vector.dart';
 import 'package:infection_in_population_simulator/utils/single_random.dart';
 
@@ -20,8 +18,9 @@ class Individual {
   });
 
   factory Individual.random({
-    double maxX = SimulationArea.width - 1,
-    double maxY = SimulationArea.height - 1,
+    double maxX = SimulationConfig.width - 1,
+    double maxY = SimulationConfig.height - 1,
+    IndividualState? state,
   }) {
     final Random random = SingleRandom().random;
     return Individual(
@@ -30,19 +29,19 @@ class Individual {
         random.nextDouble() * maxY,
       ),
       vector: Vector.randomNorm(),
-      state: IndividualStateSusceptible(), //TODO make state random
+      state: state ?? IndividualStateSusceptible(),
     );
   }
 
   factory Individual.randomBorder({
-    double maxX = SimulationArea.width - 1,
-    double maxY = SimulationArea.height - 1,
+    double maxX = SimulationConfig.width - 1,
+    double maxY = SimulationConfig.height - 1,
   }) {
     final Random random = SingleRandom().random;
     double rand = random.nextDouble();
     Point<double> position;
     Vector vector;
-    double penalty = SimulationArea.borderVectorPenalty;
+    double penalty = SimulationConfig.borderVectorPenalty;
     switch (random.nextInt(4)) {
       case 0:
         position = Point(rand * maxX, 0);
@@ -61,7 +60,6 @@ class Individual {
         position = Point(maxX, rand * maxY);
         break;
       default:
-        print('Ło kurwa');
         position = const Point(0, 0);
         vector = Vector(x: 0, y: 0);
     }
@@ -73,7 +71,7 @@ class Individual {
       if (random.nextBool()) {
         state = IndividualStateInfected();
       } else {
-        state = IndividualStateInfected();
+        state = IndividualStateSymptoms();
       }
     }
 
@@ -88,7 +86,7 @@ class Individual {
     position = Point<double>(
       position.x + vector.x,
       position.y + vector.y,
-    ).bounded(SimulationArea.width, SimulationArea.height);
+    ).bounded(SimulationConfig.width, SimulationConfig.height);
   }
 
   @override
@@ -108,8 +106,13 @@ class Individual {
 
     final Random random = SingleRandom().random;
     isOut ??= () => random.nextBool();
+    // isOut ??= () {
+    //   bool out = random.nextBool();
+    //   if (out) print('Out at: (${position.x},${position.y})');
+    //   return out;
+    // };
 
-    double penalty = SimulationArea.borderVectorPenalty;
+    double penalty = SimulationConfig.borderVectorPenalty;
 
     if (position.x == 0) {
       if (isOut()) return true;
@@ -117,10 +120,10 @@ class Individual {
     } else if (position.y == 0) {
       if (isOut()) return true;
       vector = Vector.randomConstrained(top: penalty);
-    } else if (position.x == SimulationArea.width - 1) {
+    } else if (position.x == SimulationConfig.width - 1) {
       if (isOut()) return true;
       vector = Vector.randomConstrained(right: penalty);
-    } else if (position.y == SimulationArea.height - 1) {
+    } else if (position.y == SimulationConfig.height - 1) {
       if (isOut()) return true;
       vector = Vector.randomConstrained(bottom: penalty);
     } else {
