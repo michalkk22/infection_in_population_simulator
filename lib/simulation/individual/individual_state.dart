@@ -8,6 +8,7 @@ abstract class IndividualState {
 
   List<Individual> handle(Individual self, Iterable<Individual>? neighbors);
   IndividualState? transition();
+  IndividualState thisState();
 }
 
 abstract class IndividualStateHealthy extends IndividualState {}
@@ -22,6 +23,9 @@ class IndividualStateImmune extends IndividualStateHealthy {
 
   @override
   IndividualState? transition() => null;
+
+  @override
+  IndividualState thisState() => IndividualStateImmune();
 }
 
 class IndividualStateSusceptible extends IndividualStateHealthy {
@@ -36,6 +40,9 @@ class IndividualStateSusceptible extends IndividualStateHealthy {
   IndividualState? transition() => SingleRandom().random.nextBool()
       ? IndividualStateInfected()
       : IndividualStateSymptoms();
+
+  @override
+  IndividualState thisState() => IndividualStateSusceptible();
 }
 
 class IndividualStateInfected extends IndividualState {
@@ -113,6 +120,9 @@ class IndividualStateInfected extends IndividualState {
 
   @override
   IndividualState? transition() => IndividualStateImmune();
+
+  @override
+  IndividualState thisState() => IndividualStateInfected();
 }
 
 class IndividualStateSymptoms extends IndividualStateInfected {
@@ -121,4 +131,7 @@ class IndividualStateSymptoms extends IndividualStateInfected {
 
   @override
   bool willInfect() => true;
+
+  @override
+  IndividualState thisState() => IndividualStateSymptoms();
 }
