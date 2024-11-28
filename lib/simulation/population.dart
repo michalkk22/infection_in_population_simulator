@@ -5,18 +5,20 @@ import 'package:infection_in_population_simulator/simulation/individual/individu
 class Population {
   final IndividualCollection _individuals;
   final double _pupulationIncreasePerTick =
-      SimulationConfig.populationIncreasePerSecond *
-          100 /
+      SimulationConfig.populationIncreasePerSecond /
+          100 *
           SimulationConfig.tickDuration.inMilliseconds;
   double _counter = 0;
 
   Population(this._individuals);
 
   void update() {
+    // do update
     _individuals.update();
 
+    // spawn new individuals
     _counter++;
-    while (_counter > _pupulationIncreasePerTick) {
+    while (_counter >= _pupulationIncreasePerTick) {
       _individuals.add(Individual.randomBorder());
       _counter -= _pupulationIncreasePerTick;
     }

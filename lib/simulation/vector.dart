@@ -6,10 +6,9 @@ import 'package:infection_in_population_simulator/utils/single_random.dart';
 class Vector {
   double x;
   double y;
-  final double defaultMaxSpeed = SimulationConfig.oneMeter *
-      2.5 /
-      100 /
-      SimulationConfig.tickDuration.inMilliseconds;
+  final double defaultMaxSpeed =
+      (SimulationConfig.oneMeter * SimulationConfig.maxSpeed) /
+          (1000 / SimulationConfig.tickDuration.inMilliseconds);
 
   Vector({
     required this.x,
@@ -57,10 +56,11 @@ class Vector {
 
   void next() {
     Random random = SingleRandom().random;
-    double d = SimulationConfig.nextVectorDeviation;
+    double d = SimulationConfig.nextVectorDirectionDeviation;
+    double s = SimulationConfig.nextVectorSpeedDeviation;
     x += random.nextDouble() * 2 * d - d;
     y += random.nextDouble() * 2 * d - d;
-    double length = abs() + (random.nextDouble() * 2 * d - d);
+    double length = abs() + (random.nextDouble() * 2 * s - s);
     norm(to: length.clamp(0, defaultMaxSpeed));
   }
 

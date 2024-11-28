@@ -75,6 +75,7 @@ class Individual {
       }
     }
 
+    // print('spawned at $position');
     return Individual(
       position: position,
       vector: vector,
@@ -87,18 +88,6 @@ class Individual {
       position.x + vector.x,
       position.y + vector.y,
     ).bounded(SimulationConfig.width, SimulationConfig.height);
-  }
-
-  @override
-  int get hashCode => Object.hash(position, vector, state);
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    if (other is! Individual) return false;
-    return other.position == position &&
-        other.vector == vector &&
-        other.state == state;
   }
 
   bool nextOrOut({bool Function()? isOut}) {

@@ -24,8 +24,12 @@ class _HomeViewState extends State<HomeView> {
     super.initState();
     final population = Population(IndividualList(
         collection: List.generate(SimulationConfig.populationSize, (int i) {
-      if (i < SimulationConfig.infected) {
-        return Individual.random(state: IndividualStateInfected());
+      if (i < SimulationConfig.infected + SimulationConfig.immune) {
+        if (i < SimulationConfig.infected) {
+          return Individual.random(state: IndividualStateInfected());
+        } else {
+          return Individual.random(state: IndividualStateImmune());
+        }
       }
       return Individual.random();
     })));

@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:infection_in_population_simulator/simulation/individual/individual.dart';
 import 'package:infection_in_population_simulator/simulation/individual/individual_collection.dart';
+import 'package:infection_in_population_simulator/simulation/individual/individual_state.dart';
 
 class IndividualList implements IndividualCollection {
   final List<Individual> _collection;
@@ -21,9 +22,28 @@ class IndividualList implements IndividualCollection {
 
   @override
   void update() {
-    List<Individual> toRemove = List.empty(growable: true);
+    List<Individual> toRemove = [];
+    IndividualState? newState;
     for (var individual in _collection) {
+      // handle state and change others if needed
+      List<Individual> toChange = [];
+      toChange.addAll(individual.state.handle(individual, _collection));
+
+      if (toChange.isNotEmpty) {
+        for (var ind in toChange) {
+          newState = ind.state.transition();
+          if (newState != null) {
+            ind.state = newState;
+            if (newState is IndividualStateInfected) {
+              // print('got infected at ${ind.position}');
+            }
+          }
+        }
+      }
+
+      // move and prepare for next tick
       individual.move();
+
       if (individual.nextOrOut()) {
         toRemove.add(individual);
         continue;
